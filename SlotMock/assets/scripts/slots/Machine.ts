@@ -89,15 +89,49 @@ export default class Machine extends cc.Component {
       this.button.getComponent(cc.Button).interactable = true;
       this.button.getChildByName('Label').getComponent(cc.Label).string = 'SPIN';
     }, 2500);
-
+    let n = this.numberOfEqualLines();//Aleatorizar antes de rodar quantas linhas deverão ser iguais
     const rngMod = Math.random() / 2;
+    let slotValue = this.randomTile();
+    console.log(slotValue);
     for (let i = 0; i < this.numberOfReels; i += 1) {
       const spinDelay = i < 2 + rngMod ? i / 4 : rngMod * (i - 2) + i / 4;
       const theReel = this.reels[i].getComponent('Reel');
-
+      if(n > 0){//alguma linha deve ser igual?
+        //TO DO determinar qual(is) linha(s) será(ão) igual(is) aleatoriamente.
+        result[i] = [];
+        for(let c = 0; c < 3; c++)//Passar para roleta a figura que ficará em cada posição
+        {
+          if(n >= c){
+            result[i][c] = slotValue;//Qual slot irá parar
+          }
+          else{
+            result[i][c] = -1;//slot aleatório
+          };
+          console.log("ic="+i.toString()+" "+c.toString()+" é"+ result[i][c]);
+        }
+        console.log(result[i].toString() + " i="+i.toString());
+        //fingir que foi acaso
+      }
       setTimeout(() => {
         theReel.readyStop(result[i]);
       }, spinDelay * 1000);
     }
+  }
+  numberOfEqualLines(): number{
+    let prob = Math.random()*100;
+    console.log(prob);
+    if(prob < 49){
+      return 0;
+    }
+    else if(prob < 82){
+      return 1;
+    }
+    else if(prob < 92){
+      return 2;
+    }
+    return 3;
+  }
+  randomTile() :number{
+    return Number.parseFloat(Math.random().toString()); //determinar qual figura ficará igual em todas as roletas
   }
 }

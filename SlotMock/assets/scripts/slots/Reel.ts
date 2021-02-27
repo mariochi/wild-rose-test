@@ -52,6 +52,7 @@ export default class Reel extends cc.Component {
   }
 
   readyStop(newResult: Array<number>): void {
+    //TO DO marcar a ultima rodada de spin, para setar os valores especificos nos tiles
     const check = this.spinDirection === Aux.Direction.Down || newResult == null;
     this.result = check ? newResult : newResult.reverse();
     this.stopSpinning = true;
@@ -67,11 +68,13 @@ export default class Reel extends cc.Component {
       if (this.result != null && this.result.length > 0) {
         pop = this.result.pop();
       }
-
+      let tile = el.getComponent('Tile');
       if (pop != null && pop >= 0) {
-        el.getComponent('Tile').setTile(pop);
+        let i = Math.floor(pop * tile.getNumberOfTextures());
+        console.log("this slot value is "+i);
+        tile.setTile(i);
       } else {
-        el.getComponent('Tile').setRandom();
+        tile.setRandom();
       }
     }
   }
@@ -131,4 +134,6 @@ export default class Reel extends cc.Component {
       .then(doChange)
       .start();
   }
+
+  
 }

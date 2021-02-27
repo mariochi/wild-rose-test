@@ -32,4 +32,7 @@ export default class Tile extends cc.Component {
     const randomIndex = Math.floor(Math.random() * this.textures.length);
     this.setTile(randomIndex);
   }
+  getNumberOfTextures() :number{
+    return this.textures.length;
+  }
 }
