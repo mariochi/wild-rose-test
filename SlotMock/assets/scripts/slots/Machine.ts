@@ -60,7 +60,7 @@ export default class Machine extends cc.Component {
       this.reels[i] = newReel;
 
       const reelScript = newReel.getComponent('Reel');
-      reelScript.owner = this;//.Glow;
+      reelScript.owner = this;//passa a referência de machine para reel, que irá passar para os tiles
       reelScript.shuffle();
       reelScript.reelAnchor.getComponent(cc.Layout).enabled = false;
     }

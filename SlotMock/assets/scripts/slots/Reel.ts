@@ -44,7 +44,6 @@ export default class Reel extends cc.Component {
       newTile = cc.instantiate(this.tilePrefab);
       this.reelAnchor.addChild(newTile);
       this.tiles[i] = newTile;
-      //this.tiles[i].getComponent('Tile').needGlowing = this.needGlowing;
     }
 
   }
@@ -52,9 +51,9 @@ export default class Reel extends cc.Component {
   shuffle(): void {
     for (let i = 0; i < this.tiles.length; i += 1) {
       this.tiles[i].getComponent('Tile').setRandom();
-      if(!this.tiles[i].getComponent('Tile').owner)
+      if(!this.tiles[i].getComponent('Tile').owner)//referência de machine é válida ou não?
       {
-        this.tiles[i].getComponent('Tile').owner = this.owner;
+        this.tiles[i].getComponent('Tile').owner = this.owner;//recebe a referência de machine aqui
       }
     }
   }
