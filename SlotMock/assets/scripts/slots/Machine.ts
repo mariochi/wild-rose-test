@@ -1,3 +1,4 @@
+import GameManager from '../GameManager';
 import Aux from '../SlotEnum';
 
 const { ccclass, property } = cc._decorator;
@@ -44,6 +45,10 @@ export default class Machine extends cc.Component {
 
   public spinning = false;
 
+  private numberOfLines: number;
+
+  public glowing: boolean = false;
+
   createMachine(): void {
     this.node.destroyAllChildren();
     this.reels = [];
@@ -55,6 +60,7 @@ export default class Machine extends cc.Component {
       this.reels[i] = newReel;
 
       const reelScript = newReel.getComponent('Reel');
+      reelScript.owner = this;//.Glow;
       reelScript.shuffle();
       reelScript.reelAnchor.getComponent(cc.Layout).enabled = false;
     }
@@ -63,6 +69,7 @@ export default class Machine extends cc.Component {
   }
 
   spin(): void {
+    this.glowing = false;
     this.spinning = true;
     this.button.getChildByName('Label').getComponent(cc.Label).string = 'STOP';
 
@@ -88,28 +95,27 @@ export default class Machine extends cc.Component {
       this.spinning = false;
       this.button.getComponent(cc.Button).interactable = true;
       this.button.getChildByName('Label').getComponent(cc.Label).string = 'SPIN';
+      this.glowing = true;
+
     }, 2500);
-    let n = this.numberOfEqualLines();//Aleatorizar antes de rodar quantas linhas deverão ser iguais
+    this.numberOfLines = this.numberOfEqualLines();//Aleatorizar antes de rodar quantas linhas deverão ser iguais
     const rngMod = Math.random() / 2;
-    let slotValue = this.randomTile();
-    console.log(slotValue);
+    let slotValue = Math.random();//Figurinha aleatória para parar
     for (let i = 0; i < this.numberOfReels; i += 1) {
       const spinDelay = i < 2 + rngMod ? i / 4 : rngMod * (i - 2) + i / 4;
       const theReel = this.reels[i].getComponent('Reel');
-      if(n > 0){//alguma linha deve ser igual?
+      if(this.numberOfLines > 0){//alguma linha deve ser igual?
         //TO DO determinar qual(is) linha(s) será(ão) igual(is) aleatoriamente.
         result[i] = [];
         for(let c = 0; c < 3; c++)//Passar para roleta a figura que ficará em cada posição
         {
-          if(n >= c){
+          if(this.numberOfLines >= c){
             result[i][c] = slotValue;//Qual slot irá parar
           }
           else{
             result[i][c] = -1;//slot aleatório
           };
-          console.log("ic="+i.toString()+" "+c.toString()+" é"+ result[i][c]);
         }
-        console.log(result[i].toString() + " i="+i.toString());
         //fingir que foi acaso
       }
       setTimeout(() => {
@@ -119,7 +125,6 @@ export default class Machine extends cc.Component {
   }
   numberOfEqualLines(): number{
     let prob = Math.random()*100;
-    console.log(prob);
     if(prob < 49){
       return 0;
     }
@@ -130,8 +135,5 @@ export default class Machine extends cc.Component {
       return 2;
     }
     return 3;
-  }
-  randomTile() :number{
-    return Number.parseFloat(Math.random().toString()); //determinar qual figura ficará igual em todas as roletas
   }
 }

@@ -12,7 +12,10 @@ export default class GameManager extends cc.Component {
 
   private result = null;
 
+  public glow: boolean;
+  //window = { glow: boolean}
   start(): void {
+    // = null;
     this.machine.getComponent('Machine').createMachine();
   }
 

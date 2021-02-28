@@ -1,4 +1,5 @@
 import Aux from '../SlotEnum';
+import Machine from './Machine';
 
 const { ccclass, property } = cc._decorator;
 
@@ -20,7 +21,8 @@ export default class Reel extends cc.Component {
   get tilePrefab(): cc.Prefab {
     return this._tilePrefab;
   }
-
+  public owner: Machine;
+  public needGlowing = null;
   set tilePrefab(newPrefab: cc.Prefab) {
     this._tilePrefab = newPrefab;
     this.reelAnchor.removeAllChildren();
@@ -42,12 +44,18 @@ export default class Reel extends cc.Component {
       newTile = cc.instantiate(this.tilePrefab);
       this.reelAnchor.addChild(newTile);
       this.tiles[i] = newTile;
+      //this.tiles[i].getComponent('Tile').needGlowing = this.needGlowing;
     }
+
   }
 
   shuffle(): void {
     for (let i = 0; i < this.tiles.length; i += 1) {
       this.tiles[i].getComponent('Tile').setRandom();
+      if(!this.tiles[i].getComponent('Tile').owner)
+      {
+        this.tiles[i].getComponent('Tile').owner = this.owner;
+      }
     }
   }
 
@@ -70,9 +78,8 @@ export default class Reel extends cc.Component {
       }
       let tile = el.getComponent('Tile');
       if (pop != null && pop >= 0) {
-        let i = Math.floor(pop * tile.getNumberOfTextures());
-        console.log("this slot value is "+i);
-        tile.setTile(i);
+
+        tile.setTile(pop,true);
       } else {
         tile.setRandom();
       }
@@ -134,6 +141,5 @@ export default class Reel extends cc.Component {
       .then(doChange)
       .start();
   }
-
   
 }
